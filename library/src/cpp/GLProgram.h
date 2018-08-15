@@ -8,16 +8,21 @@ NS_GPCP_BEGIN
     class GLProgram {
     public:
         GLProgram();
+
         virtual ~GLProgram();
 
-        static GLProgram * createWithShaderString(string vertexShaderString, string fragmentShaderString);
+        static GLProgram *createWithShaderString(const string &vertexShaderString, const string &fragmentShaderString);
 
         void addAttribute(string attributeName);
+
         GLint attributeIndex(string attributeName);
+
         GLint uniformIndex(string uniformName);
 
         bool link();
+
         void use();
+
         void validate();
 
     private:
@@ -28,9 +33,9 @@ NS_GPCP_BEGIN
         vector<string> _attributes;
         vector<string> _uniforms;
 
-        void initWithShaderString(string vertexShaderString, string fragmentShaderString);
+        void initWithShaderString(const string &vertexShaderString, const string &fragmentShaderString);
 
-        bool compileShader(GLuint * shader, GLenum type, string shaderString);
+        bool compileShader(GLuint *shader, GLenum type, string shaderString);
 
         void releaseShader(GLuint program, GLuint shader);
     };

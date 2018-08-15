@@ -9,7 +9,10 @@ add_library(gpuimage-cp-lib SHARED
 
         # Provides a relative path to your source file(s).
         ../../../library/src/cpp/GPCP-Common.cpp
-        ../../../library/src/cpp/GLProgram.cpp)
+        ../../../library/src/cpp/GLProgram.cpp
+        ../../../library/src/cpp/GPUImageFramebuffer.cpp
+        ../../../library/src/cpp/GPUImageFramebufferCache.cpp
+        ../../../library/src/cpp/GPUImageContext.cpp)
 
 # android libs
 find_library(log-lib log)

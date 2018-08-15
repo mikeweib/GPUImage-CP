@@ -26,8 +26,11 @@
 #define GPCP_SAFE_DELETE_ARRAY(array)  { if((array) != nullptr) { delete [] array; (array) = nullptr;} }
 #define GPCP_SAFE_FREE(p)             do { if(p) { free(p); (p) = nullptr; } } while(0)
 
+
+
 // 引用 opengles 头文件
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE // IOS
+#if TARGET_OS_IPHONE // IOS
+
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
@@ -35,6 +38,7 @@
 #import <OpenGLES/ES2/glext.h>
 
 #elif __ANDROID__ // Android
+
 #include <GLES/gl.h>
 #include <GLES/glext.h>
 
@@ -44,10 +48,14 @@
 #endif
 
 
+
 // 引用 android log 头文件
 #if defined (__ANDROID__)
+
 #include <android/log.h>
+
 #endif
+
 
 
 // 定义命名空间
@@ -62,23 +70,69 @@
 #endif
 
 
+
 // 使用标准库命名空间
 using namespace std;
 
 
-// 定义 ios gettid.
-#ifdef TARGET_OF_IOS
-int gettid();
-#endif // TARGET_OF_IOS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void log(const char *format, ...);
+// 定义区分平台的宏定义
+#if TARGET_OF_IOS
+int gettid();  // 定义 ios gettid.
+
+NS_GPCP_BEGIN
+class GPUImageContext; // 定义GPUImageContext, 为下面 ios 接口使用
+NS_GPCP_END
+
+void runOnMainQueueWithoutDeadlocking(void (^block)(void));
+void runSynchronouslyOnVideoProcessingQueue(void (^block)(void));
+void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void));
+void runSynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(void));
+void runAsynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(void));
+
+#define runOnMainQueue                          runOnMainQueueWithoutDeadlocking(^{
+#define runSynchronouslyOnVideoProcessingStart  runSynchronouslyOnVideoProcessingQueue(^{
+#define runAsynchronouslyOnVideoProcessingStart runAsynchronouslyOnVideoProcessingQueue(^{
+#define runSynchronouslyOnContextStart          runSynchronouslyOnContextQueue(^{
+#define runAsynchronouslyOnContextStart         runAsynchronouslyOnContextQueue(^{
+
+#define runProcessingEnd });
+
+#define __BLOCK __block
+
+#elif __ANDROID__ // Android
+
+#define runOnMainQueue
+#define runSynchronouslyOnVideoProcessingStart
+#define runAsynchronouslyOnVideoProcessingStart
+#define runSynchronouslyOnContextStart
+#define runAsynchronouslyOnContextStart
+#define runProcessingEnd
+
+#define __BLOCK
+
+#endif // TARGET_OF_IOS && Android
+
+
+void logInfo(const char *format, ...);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+
 
 // 定义 LOG
 #ifdef GPCP_DEBUG
-#define LOGD(format, ...) log(format, ##__VA_ARGS__)
+#define LOGD(format, ...) logInfo(format, ##__VA_ARGS__)
 #else
 #define LOGD(...) do {} while (0)
 #endif // CM_DEBUG
+
 
 #define GPCP_EPSILON 0.0000001f
 

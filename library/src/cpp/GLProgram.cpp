@@ -1,13 +1,14 @@
+//
+// Created by Mike Pro on 2018/8/13.
+//
 
 #include "GLProgram.h"
-
-#include "GPCP-Common.h"
 
 USING_NS_GPCP;
 
 NS_GPCP_BEGIN
 
-    GLProgram *GLProgram::createWithShaderString(string vertexShaderString, string fragmentShaderString) {
+    GLProgram *GLProgram::createWithShaderString(const string & vertexShaderString, const string & fragmentShaderString) {
         GLProgram *program = new GLProgram();
 
         program->initWithShaderString(vertexShaderString, fragmentShaderString);
@@ -77,7 +78,7 @@ NS_GPCP_BEGIN
 
 
     // private
-    void GLProgram::initWithShaderString(string vertexShaderString, string fragmentShaderString) {
+    void GLProgram::initWithShaderString(const string & vertexShaderString, const string & fragmentShaderString) {
         _program = glCreateProgram();
 
         if(!compileShader(&_vertShader, GL_VERTEX_SHADER, vertexShaderString)) {

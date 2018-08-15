@@ -1,8 +1,16 @@
+//
+// Created by Mike Pro on 2018/8/13.
+//
+
 #include "GPCP-Common.h"
 
 static const int MAX_LOG_LENGTH = 16 * 1024;
 
-void _log(const char *format, va_list args) {
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void _logInfo(const char *format, va_list args) {
     int bufferSize = MAX_LOG_LENGTH;
     char *buf = nullptr;
     int nret = 0;
@@ -32,7 +40,7 @@ void _log(const char *format, va_list args) {
     delete[] buf;
 }
 
-void log(const char *format, ...) {
+void logInfo(const char *format, ...) {
     va_list args;
     va_start(args, format);
 #ifdef __ANDROID__
@@ -42,3 +50,7 @@ void log(const char *format, ...) {
 #endif
     va_end(args);
 }
+
+#ifdef __cplusplus
+}
+#endif
